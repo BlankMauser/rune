@@ -1,16 +1,22 @@
 //! Built-in macros.
 
 use crate as rune;
+#[cfg(feature = "macros")]
 use crate::compile;
+#[cfg(feature = "macros")]
 use crate::macros::{quote, MacroContext, TokenStream};
+#[cfg(feature = "macros")]
 use crate::parse::Parser;
 use crate::{ContextError, Module};
 
 /// Built-in macros.
 #[rune::module(::std::macros::builtin)]
 pub fn module() -> Result<Module, ContextError> {
+    #[cfg_attr(not(feature = "macros"), allow(unused_mut))]
     let mut builtins = Module::from_meta(self::module_meta)?.with_unique("std::macros::builtin");
+    #[cfg(feature = "macros")]
     builtins.macro_meta(file)?;
+    #[cfg(feature = "macros")]
     builtins.macro_meta(line)?;
     Ok(builtins)
 }
@@ -22,6 +28,7 @@ pub fn module() -> Result<Module, ContextError> {
 /// ```rune
 /// println!("{}:{}: Something happened", file!(), line!());
 /// ```
+#[cfg(feature = "macros")]
 #[rune::macro_]
 pub(crate) fn line(
     cx: &mut MacroContext<'_, '_, '_>,
@@ -47,6 +54,7 @@ pub(crate) fn line(
 /// ```rune
 /// println!("{}:{}: Something happened", file!(), line!());
 /// ```
+#[cfg(feature = "macros")]
 #[rune::macro_]
 pub(crate) fn file(
     cx: &mut MacroContext<'_, '_, '_>,

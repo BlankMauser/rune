@@ -2,8 +2,11 @@
 
 use crate as rune;
 use crate::alloc::prelude::*;
+#[cfg(feature = "macros")]
 use crate::compile;
+#[cfg(feature = "macros")]
 use crate::macros::{quote, FormatArgs, MacroContext, TokenStream};
+#[cfg(feature = "macros")]
 use crate::parse::Parser;
 use crate::runtime::{Panic, Value, VmResult};
 use crate::{ContextError, Module};
@@ -35,7 +38,10 @@ pub fn module() -> Result<Module, ContextError> {
     module.function_meta(is_readable)?;
     module.function_meta(is_writable)?;
 
+    #[cfg(feature = "macros")]
+
     module.macro_meta(stringify_macro)?;
+    #[cfg(feature = "macros")]
     module.macro_meta(panic_macro)?;
     Ok(module)
 }
@@ -99,6 +105,7 @@ fn is_writable(value: Value) -> bool {
 ///
 /// This can be used by macros to convert a stream of tokens into a readable
 /// string.
+#[cfg(feature = "macros")]
 #[rune::macro_(path = stringify)]
 pub(crate) fn stringify_macro(
     cx: &mut MacroContext<'_, '_, '_>,
@@ -114,6 +121,7 @@ pub(crate) fn stringify_macro(
 /// A panic in Rune causes the current execution to unwind and terminate. The
 /// panic will not be propagated into Rust, but will instead be signatted
 /// through a `VmError`.
+#[cfg(feature = "macros")]
 #[rune::macro_(path = panic)]
 pub(crate) fn panic_macro(
     cx: &mut MacroContext<'_, '_, '_>,

@@ -17,7 +17,7 @@ categories = ["parser-implementations"]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(rune_nightly, rune_docsrs, rune_byte_code)'] }
 
 [features]
-default = ["emit", "std"]
+default = ["emit", "std", "macros"]
 tracing = ["tracing/enabled"]
 emit = ["std", "codespan-reporting"]
 bench = []
@@ -29,6 +29,10 @@ byte-code = ["alloc", "musli/storage"]
 capture-io = ["alloc", "parking_lot"]
 disable-io = ["alloc"]
 fmt = ["alloc"]
+# The standard library's compile-time macros: `format!`, `println!`, `assert!`
+# and the rest. A host that only runs compiled units leaves them out, and with
+# them every path into the compiler.
+macros = []
 std = ["alloc", "num/std", "serde/std", "rune-core/std", "rune-alloc/std", "musli/std", "musli/std", "once_cell/std", "anyhow/std", "syntree/std"]
 alloc = ["anyhow", "rune-alloc/alloc", "rune-core/alloc", "once_cell/alloc", "serde/alloc"]
 

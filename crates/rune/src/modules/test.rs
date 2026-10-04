@@ -1,10 +1,16 @@
 //! Testing and benchmarking.
 
 use crate as rune;
-use crate::alloc::{try_format, Vec};
+#[cfg(feature = "macros")]
+use crate::alloc::try_format;
+use crate::alloc::Vec;
+#[cfg(feature = "macros")]
 use crate::ast;
+#[cfg(feature = "macros")]
 use crate::compile;
+#[cfg(feature = "macros")]
 use crate::macros::{quote, FormatArgs, MacroContext, TokenStream};
+#[cfg(feature = "macros")]
 use crate::parse::Parser;
 use crate::runtime::Function;
 use crate::{Any, ContextError, Module};
@@ -14,8 +20,12 @@ use crate::{Any, ContextError, Module};
 pub fn module() -> Result<Module, ContextError> {
     let mut m = Module::from_meta(self::module_meta)?.with_unique("std::test");
 
+    #[cfg(feature = "macros")]
+
     m.macro_meta(assert)?;
+    #[cfg(feature = "macros")]
     m.macro_meta(assert_eq)?;
+    #[cfg(feature = "macros")]
     m.macro_meta(assert_ne)?;
 
     m.ty::<Bencher>()?.docs(docstring! {
@@ -62,6 +72,7 @@ impl Bencher {
 ///
 /// assert!(value == 42, "Value was not what was expected, instead it was {}", value);
 /// ```
+#[cfg(feature = "macros")]
 #[rune::macro_]
 pub(crate) fn assert(
     cx: &mut MacroContext<'_, '_, '_>,
@@ -107,6 +118,7 @@ pub(crate) fn assert(
 ///
 /// assert_eq!(value, 42, "Value was not 42, instead it was {}", value);
 /// ```
+#[cfg(feature = "macros")]
 #[rune::macro_]
 pub(crate) fn assert_eq(
     cx: &mut MacroContext<'_, '_, '_>,
@@ -169,6 +181,7 @@ pub(crate) fn assert_eq(
 ///
 /// assert_ne!(value, 10, "Value was 10");
 /// ```
+#[cfg(feature = "macros")]
 #[rune::macro_]
 pub(crate) fn assert_ne(
     cx: &mut MacroContext<'_, '_, '_>,

@@ -5,8 +5,11 @@ use core::fmt;
 use crate as rune;
 use crate::alloc::fmt::TryWrite;
 use crate::alloc::prelude::*;
+#[cfg(feature = "macros")]
 use crate::compile;
+#[cfg(feature = "macros")]
 use crate::macros::{FormatArgs, MacroContext, TokenStream};
+#[cfg(feature = "macros")]
 use crate::parse::Parser;
 use crate::runtime::{EnvProtocolCaller, Format, Formatter, VmResult};
 use crate::{ContextError, Module};
@@ -29,6 +32,7 @@ pub fn module() -> Result<Module, ContextError> {
     m.ty::<Formatter>()?;
     m.ty::<fmt::Error>()?;
     m.function_meta(fmt_error_display_fmt)?;
+    #[cfg(feature = "macros")]
     m.macro_meta(format)?;
 
     m.ty::<Format>()?;
@@ -54,6 +58,7 @@ fn fmt_error_display_fmt(error: &fmt::Error, f: &mut Formatter) -> VmResult<()> 
 /// let string = format!("Hello {}", who);
 /// assert_eq!(string, "Hello World");
 /// ```
+#[cfg(feature = "macros")]
 #[rune::macro_(path = format)]
 pub(crate) fn format(
     cx: &mut MacroContext<'_, '_, '_>,

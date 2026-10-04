@@ -6,8 +6,11 @@ use std::io::{self, Write as _};
 use crate as rune;
 #[cfg(feature = "std")]
 use crate::alloc::fmt::TryWrite;
+#[cfg(feature = "macros")]
 use crate::compile;
+#[cfg(feature = "macros")]
 use crate::macros::{quote, FormatArgs, MacroContext, TokenStream};
+#[cfg(feature = "macros")]
 use crate::parse::Parser;
 #[cfg(feature = "std")]
 use crate::runtime::{Formatter, InstAddress, Memory, Output, Panic, VmResult};
@@ -74,8 +77,11 @@ pub fn module(
 
     // These are unconditionally included, but using them might cause a
     // compilation error unless `::std::io::*` functions are provided somehow.
+    #[cfg(feature = "macros")]
     module.macro_meta(dbg_macro)?;
+    #[cfg(feature = "macros")]
     module.macro_meta(print_macro)?;
+    #[cfg(feature = "macros")]
     module.macro_meta(println_macro)?;
     Ok(module)
 }
@@ -123,6 +129,7 @@ fn dbg_impl(stack: &mut dyn Memory, addr: InstAddress, args: usize, out: Output)
 ///
 /// dbg!(number, string);
 /// ```
+#[cfg(feature = "macros")]
 #[rune::macro_(path = dbg)]
 pub(crate) fn dbg_macro(
     cx: &mut MacroContext<'_, '_, '_>,
@@ -142,6 +149,7 @@ pub(crate) fn dbg_macro(
 /// let who = "World";
 /// print!("Hello {}!", who);
 /// ```
+#[cfg(feature = "macros")]
 #[rune::macro_(path = print)]
 pub(crate) fn print_macro(
     cx: &mut MacroContext<'_, '_, '_>,
@@ -190,6 +198,7 @@ fn print_impl(m: &str) -> VmResult<()> {
 /// let who = "World";
 /// println!("Hello {}!", who);
 /// ```
+#[cfg(feature = "macros")]
 #[rune::macro_(path = println)]
 pub(crate) fn println_macro(
     cx: &mut MacroContext<'_, '_, '_>,
